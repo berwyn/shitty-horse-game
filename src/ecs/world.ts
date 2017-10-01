@@ -1,3 +1,4 @@
+import { Dispatcher, Event } from './dispatcher'
 import { Entity } from './entity'
 import { Component } from './component'
 import { System } from './system'
@@ -8,7 +9,7 @@ export class World {
   private _components: Map<Entity, Component[]>
   private _systems: System[]
 
-  constructor() {
+  constructor(private _dispatcher: Dispatcher) {
     this._entities = []
     this._components = new Map()
     this._systems = []
@@ -31,6 +32,10 @@ export class World {
 
   registerSystem(system: System): void {
     this._systems.push(system)
+  }
+
+  dispatch<T extends Event>(event: T): void {
+    this._dispatcher.dispatch(event)
   }
 
   tick(): void {

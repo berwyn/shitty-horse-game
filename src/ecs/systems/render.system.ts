@@ -1,13 +1,27 @@
-import { Engine } from '../../renderer/engine';
-import { System } from '../system'
+import { Object3D } from 'three'
+import { Observable } from 'rxjs/Observable'
+
+import { Engine } from '../../renderer/engine'
+import { ReactiveSystem } from '../system'
 import { World } from '../world'
 import { Component } from '../component'
+import { Event } from '../Dispatcher'
 
-export class RenderSystem extends System {
+export class SceneAddEvent {
+  type: 'scene-add'
+  object: Object3D
+}
+
+export class RenderSystem extends ReactiveSystem {
   constructor(
-    private _engine: Engine
+    private _engine: Engine,
+    events$: Observable<Event>
   ) {
-    super()
+    super(events$)
+    this._select('scene-add')
+      .subscribe((event: SceneAddEvent) => {
+        this._engine.attach(event.object)
+      })
   }
 
   tick(world: World, entity: Symbol, components: Component[]): void {

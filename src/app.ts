@@ -1,6 +1,7 @@
 import './app.scss'
 import { BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
 
+import { Dispatcher } from './ecs/dispatcher'
 import { World } from './ecs/world'
 import { Engine } from './renderer/engine'
 
@@ -13,11 +14,12 @@ import { SpinnerSystem } from './ecs/systems/spinner.system'
 const bootstrap = () => {
   const root = document.getElementById('root')!
   const engine = new Engine(root.querySelector('canvas') || undefined)
-  const world = new World()
+  const dispatcher = new Dispatcher()
+  const world = new World(dispatcher)
   const player = world.createEntity('Player')
 
   const ssystem = new SpinnerSystem()
-  const rsystem = new RenderSystem(engine)
+  const rsystem = new RenderSystem(engine, dispatcher.stream())
 
   world.registerSystem(ssystem)
   world.registerSystem(rsystem)
@@ -30,10 +32,10 @@ const bootstrap = () => {
   let geom = new BoxGeometry(1, 1, 1)
   let mat = new MeshBasicMaterial({ color: 0x00ff00 })
   const mcomponent = new MeshComponent(new Mesh(geom, mat))
-  engine.attach(mcomponent.sysmesh)
 
   world.attachComponent(player, tcomponent)
   world.attachComponent(player, mcomponent)
+  world.dispatch({ type: 'scene-add', object: mcomponent.sysmesh })
 
   engine.mount(root)
   const loop = () => {
