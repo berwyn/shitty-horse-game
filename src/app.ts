@@ -1,15 +1,13 @@
 import './app.scss'
-import { BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
 
 import { Dispatcher } from './ecs/dispatcher'
 import { World } from './ecs/world'
 import { Engine } from './renderer/engine'
 
-import { MeshComponent } from './ecs/components/mesh.component'
-import { TransformComponent } from './ecs/components/transform.component'
-
 import { RenderSystem } from './ecs/systems/render.system'
 import { SpinnerSystem } from './ecs/systems/spinner.system'
+
+import Cube from './prefabs/cube'
 
 const bootstrap = () => {
   const root = document.getElementById('root')!
@@ -17,6 +15,7 @@ const bootstrap = () => {
   const dispatcher = new Dispatcher()
   const world = new World(dispatcher)
   const player = world.createEntity('Player')
+  const p2 = world.createEntity('Player 2')
 
   const ssystem = new SpinnerSystem()
   const rsystem = new RenderSystem(engine, dispatcher.stream())
@@ -24,20 +23,11 @@ const bootstrap = () => {
   world.registerSystem(ssystem)
   world.registerSystem(rsystem)
 
-  const tcomponent = new TransformComponent()
-  tcomponent.rotation.x = 0.00
-  tcomponent.rotation.y = 0.01
-  tcomponent.rotation.z = 0.01
-
-  let geom = new BoxGeometry(1, 1, 1)
-  let mat = new MeshBasicMaterial({ color: 0x00ff00 })
-  const mcomponent = new MeshComponent(new Mesh(geom, mat))
-
-  world.attachComponent(player, tcomponent)
-  world.attachComponent(player, mcomponent)
-  world.dispatch({ type: 'scene-add', object: mcomponent.sysmesh })
-
   engine.mount(root)
+
+  Cube(world, player)
+  Cube(world, p2, {x: 1, y: 1, z: 1}, 0xff0000)
+
   const loop = () => {
     world.tick()
     requestAnimationFrame(loop)

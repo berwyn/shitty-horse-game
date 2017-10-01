@@ -12,9 +12,11 @@ export class SpinnerSystem extends System {
       .find(c => c.type === MeshComponent.type) as MeshComponent | undefined
 
     if (transform && mesh) {
-      mesh.sysmesh.rotation.x += transform.rotation.x
-      mesh.sysmesh.rotation.y += transform.rotation.y
-      mesh.sysmesh.rotation.z += transform.rotation.z
+      const { postion, rotation } = transform
+      mesh.sysmesh.position.set(postion.x, postion.y, postion.z)
+      mesh.sysmesh.rotation.x += rotation.x
+      mesh.sysmesh.rotation.y += rotation.y
+      mesh.sysmesh.rotation.z += rotation.z
     }
   }
 }

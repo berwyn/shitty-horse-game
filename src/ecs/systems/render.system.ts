@@ -20,6 +20,7 @@ export class RenderSystem extends ReactiveSystem {
     super(events$)
     this._select('scene-add')
       .subscribe((event: SceneAddEvent) => {
+        console.log('Adding mesh to scene')
         this._engine.attach(event.object)
       })
   }
