@@ -1,9 +1,18 @@
-import { Scene, Camera, Renderer, WebGLRenderer, PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh, WebGLRendererParameters, Object3D } from 'three'
+import {
+  Scene,
+  Camera,
+  Renderer,
+  WebGLRenderer,
+  PerspectiveCamera,
+  Mesh,
+  WebGLRendererParameters,
+  Object3D,
+} from 'three'
 
 export class Engine {
 
   private _scene: Scene
-  private _camera: Camera
+  private _camera: PerspectiveCamera
   private _renderer: Renderer
 
   constructor(canvas?: HTMLCanvasElement) {
@@ -15,7 +24,7 @@ export class Engine {
     this._scene = new Scene()
     this._camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     this._renderer = new WebGLRenderer(rparams)
-    this._renderer.setSize(window.innerWidth, window.innerHeight)
+    this.resize()
 
     this._camera.position.z = 5
     this.frame()
@@ -34,6 +43,12 @@ export class Engine {
 
   attach(...objects: Object3D[]): void {
     this._scene.add(...objects)
+  }
+
+  resize() {
+    this._renderer.setSize(window.innerWidth, window.innerHeight)
+    this._camera.aspect = window.innerWidth / window.innerHeight
+    this._camera.updateProjectionMatrix()
   }
 
   frame(): void {

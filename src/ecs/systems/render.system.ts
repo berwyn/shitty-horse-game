@@ -12,6 +12,10 @@ export class SceneAddEvent {
   object: Object3D
 }
 
+export class SceneResizeEvent {
+  type: 'scene-resize'
+}
+
 export class RenderSystem extends ReactiveSystem {
   constructor(
     private _engine: Engine,
@@ -22,6 +26,11 @@ export class RenderSystem extends ReactiveSystem {
       .subscribe((event: SceneAddEvent) => {
         console.log('Adding mesh to scene')
         this._engine.attach(event.object)
+      })
+
+    this._select('scene-resize')
+      .subscribe(() => {
+        this._engine.resize()
       })
   }
 

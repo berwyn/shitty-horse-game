@@ -17,6 +17,8 @@ const bootstrap = () => {
   const player = world.createEntity('Player')
   const p2 = world.createEntity('Player 2')
 
+  window.addEventListener('resize', () => world.dispatch({ type: 'scene-resize' }))
+
   const ssystem = new SpinnerSystem()
   const rsystem = new RenderSystem(engine, dispatcher.stream())
 
